@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon .",
-    "heroku-postbuild": "npm run build"
+    "dev": "nodemon ."
   },
   "author": "Bernardo Flores",
   "license": "ISC",
