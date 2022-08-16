@@ -4,7 +4,7 @@
   "description": "examen",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./index.js",
     "dev": "nodemon ."
   },
   "author": "Bernardo Flores",
