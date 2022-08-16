@@ -1,6 +1,9 @@
 const { gql } = require("apollo-server");
 // Schema
 const typeDefs = gql`
+
+  scalar Upload
+
   type User {
     id: ID
     name: String
@@ -22,6 +25,11 @@ const typeDefs = gql`
 
   type Token {
     token: String
+  }
+
+  type UpdateAvatar {
+    status: Boolean
+    urlAvatar: String
   }
 
   type Purchase {
@@ -71,8 +79,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    getUser: User
-
+    getUser(token: String!): User
+    getUserId(id: ID!): User
     getProducts: [Product]
     getProduct(id: ID!): Product
 
@@ -84,6 +92,7 @@ const typeDefs = gql`
     newUser(input: UserInput): User
     authenticateUser(input: AutenticateInput): Token
     updateUser(id: ID!, input: UserInput): User
+    updateAvatar(file: Upload!): UpdateAvatar
 
     #product
     newProduct(input: ProductInput): Product

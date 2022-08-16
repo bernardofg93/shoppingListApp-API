@@ -28,8 +28,16 @@ const createToken = (user, secret, expiresIn) => {
 // Resolver
 const resolvers = {
   Query: {
-    getUser: async (_, {}, ctx) => {
-      return ctx.user;
+    getUser: async (_, {token}, ctx) => {
+      const usuarioId = await jwt.verify(token, process.env.SECRET);
+      return usuarioId;
+    },
+    getUserId: async (_, {id}, ctx) => {
+      const user = await User.findById(id);
+      if (!user) {
+        throw new Error("Producto no encontrado");
+      }
+      return user;
     },
     getProducts: async () => {
       try {
@@ -41,7 +49,7 @@ const resolvers = {
     },
     getProduct: async (_, { id }) => {
       // revisar si el producto existe
-      const product = await Product.findById(id);
+      const product = await Product.findById({_id: id});
 
       if (!product) {
         throw new Error("Producto no encontrado");
@@ -164,6 +172,10 @@ const resolvers = {
         console.log(error);
       }
     },
+    updateAvatar: async (_, {file}, ctx) => {
+      console.log(file);
+      return null;
+    }
   },
 };
 
