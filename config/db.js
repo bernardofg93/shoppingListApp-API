@@ -6,6 +6,10 @@ const connectDB = async () => {
     await mongoose.connect(process.env.DB_MONGO, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
     });
     console.log("DB Connect");
   } catch (error) {
@@ -14,5 +18,6 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
+
 
 module.exports = connectDB;
