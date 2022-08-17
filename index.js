@@ -6,6 +6,7 @@ const typeDefs = require("./db/schema");
 const jwt = require("jsonwebtoken");
 const { graphqlUploadExpress } = require("graphql-upload");
 require("dotenv").config({ path: "variables.env" });
+const http = require('http');
 
 // Conection to mongo DB
 mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true });
@@ -45,9 +46,10 @@ async function server() {
   });
   await serverApollo.start();
   const app = express();
-  app.use(graphqlUploadExpress());
-  serverApollo.applyMiddleware({ app });
-  await new Promise((r) => app.listen({ port: process.env.PORT || PORT }, r));
+  const server = http.Server(app);
+  server.use(graphqlUploadExpress());
+  serverApollo.applyMiddleware({ server });
+  await new Promise((r) => server.listen({ port: process.env.PORT || PORT }, r));
 
   console.log(`Servidor listo en la URL`);
 }
