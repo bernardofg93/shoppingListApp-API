@@ -1,5 +1,5 @@
 const { ApolloServer } = require("apollo-server-express");
-const connectDB = require("./config/db");
+const mongoose = require("mongoose");
 const express = require('express');
 const resolvers = require("./db/resolvers");
 const typeDefs = require("./db/schema");
@@ -8,9 +8,21 @@ const { graphqlUploadExpress } = require("graphql-upload");
 require("dotenv").config({ path: "variables.env" });
 
 // Conection to mongo DB
-connectDB();
+mongoose.connect(
+  process.env.DB_MONGO,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err, _) => {
 
-server();
+    if(err) {
+      console.log('conecion failed');
+    } else {
+      server();
+    }
+  }
+);
 
 // Server
 async function server(){
