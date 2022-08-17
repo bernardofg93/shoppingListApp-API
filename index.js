@@ -17,6 +17,8 @@ async function server(){
   const serverApollo = new ApolloServer({
     typeDefs,
     resolvers,
+    csrfPrevention: true,
+    cache: "bounded",
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
