@@ -10,7 +10,6 @@ require("dotenv").config({ path: "variables.env" });
 // Conection to mongo DB
 
 mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true });
-const conn = mongoose.connection;
 mongoose.connection.once("open", () => {
   console.log("MongoDB Connected");
 });
