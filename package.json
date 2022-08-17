@@ -2,8 +2,9 @@
   "name": "apollo-graphql",
   "version": "1.0.0",
   "description": "examen",
+  "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./index.js",
     "dev": "nodemon ."
   },
   "author": "Bernardo Flores",
@@ -19,8 +20,7 @@
     "graphql": "^16.6.0",
     "graphql-upload": "^13.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.5.2",
-    "whatwg-url": "^11.0.0"
+    "mongoose": "^6.5.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
