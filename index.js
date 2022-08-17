@@ -49,5 +49,5 @@ async function server() {
   serverApollo.applyMiddleware({ app });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
-  console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
+  console.log(`Servidor listo en la URL`);
 }
