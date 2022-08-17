@@ -9,7 +9,7 @@ require("dotenv").config({ path: "variables.env" });
 
 // Conection to mongo DB
 mongoose.connect(
-  'mongodb+srv://admin:admin@cluster0.zubcy.mongodb.net/shoppingList',
+  'mongodb+srv://admin:admin@cluster0.zubcy.mongodb.net/?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
