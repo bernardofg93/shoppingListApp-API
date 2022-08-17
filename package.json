@@ -6,6 +6,9 @@
     "start": "node index.js",
     "dev": "nodemon ."
   },
+  "engines": {
+    "node": "v16.13.2"
+  },
   "author": "Bernardo Flores",
   "license": "ISC",
   "dependencies": {
