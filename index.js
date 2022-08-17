@@ -6,14 +6,11 @@ const typeDefs = require("./db/schema");
 const jwt = require("jsonwebtoken");
 const { graphqlUploadExpress } = require("graphql-upload");
 require("dotenv").config({ path: "variables.env" });
-const MongoClient = require("mongodb").MongoClient;
 
 // Conection to mongo DB
 
-const client = await new MongoClient(process.env.DB_MONGO, {
-  useNewUrlParser: true,
-});
-client.connect();
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+const conn = mongoose.connection;
 mongoose.connection.once("open", () => {
   console.log("MongoDB Connected");
 });
