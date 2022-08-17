@@ -8,7 +8,6 @@ const { graphqlUploadExpress } = require("graphql-upload");
 require("dotenv").config({ path: "variables.env" });
 
 // Conection to mongo DB
-
 mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
   console.log("MongoDB Connected");
@@ -24,7 +23,6 @@ async function server() {
   const serverApollo = new ApolloServer({
     typeDefs,
     resolvers,
-    csrfPrevention: true,
     cache: "bounded",
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
