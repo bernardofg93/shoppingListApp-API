@@ -9,7 +9,7 @@ require("dotenv").config({ path: "variables.env" });
 
 // Conection to mongo DB
 mongoose.connect(
-  'mongodb+srv://admin:admin@cluster0.zubcy.mongodb.net/?retryWrites=true&w=majority',
+  process.env.DB_MONGO,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -54,7 +54,7 @@ async function server(){
   const app = express();
   app.use(graphqlUploadExpress())
   serverApollo.applyMiddleware({ app });
-  await new Promise((r) => app.listen({port: process.env.PORT || 3000}, r));
+  await new Promise((r) => app.listen({port: process.env.PORT || 5225}, r));
 
   console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
 }
