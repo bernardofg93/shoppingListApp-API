@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server");
+const { gql } = require("apollo-server-express");
 // Schema
 const typeDefs = gql`
 
@@ -12,6 +12,7 @@ const typeDefs = gql`
     country: String
     phone: String
     email: String
+    avatar: String
     create: String
   }
 
@@ -79,7 +80,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    getUser(token: String!): User
+    getUser: User
     getUserId(id: ID!): User
     getProducts: [Product]
     getProduct(id: ID!): Product
@@ -91,8 +92,8 @@ const typeDefs = gql`
     #User
     newUser(input: UserInput): User
     authenticateUser(input: AutenticateInput): Token
-    updateUser(id: ID!, input: UserInput): User
-    updateAvatar(file: Upload!): UpdateAvatar
+    updateUser(id: ID, input: UserInput): User
+    updateAvatar(file: Upload): UpdateAvatar
 
     #product
     newProduct(input: ProductInput): Product

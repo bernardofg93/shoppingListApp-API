@@ -3,7 +3,9 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Product = require("../models/Product");
 const Purchase = require("../models/Purchase");
+const { GraphQLUpload } = require("graphql-upload");
 require("dotenv").config({ path: "variables.env" });
+const awsUploadImage = require("../utils/aws-upload-image");
 
 const createToken = (user, secret, expiresIn) => {
   const { id, name, address, city, country, phone, email } = user;
@@ -27,10 +29,10 @@ const createToken = (user, secret, expiresIn) => {
 
 // Resolver
 const resolvers = {
+  Upload: GraphQLUpload,
   Query: {
-    getUser: async (_, {token}, ctx) => {
-      const usuarioId = await jwt.verify(token, process.env.SECRET);
-      return usuarioId;
+    getUser: async (_, {}, ctx) => {
+      return ctx.user;
     },
     getUserId: async (_, {id}, ctx) => {
       const user = await User.findById(id);
@@ -172,9 +174,27 @@ const resolvers = {
         console.log(error);
       }
     },
-    updateAvatar: async (_, {file}, ctx) => {
-      console.log(file);
-      return null;
+    updateAvatar: async (_, { file }, ctx) => {
+      const { id } = ctx.user;
+      const { createReadStream, mimetype } = await file;
+      const extension = mimetype.split("/")[1]
+      const imageName = `avatar/${id}.${extension}`;
+      const fileData = createReadStream();
+
+      try {
+        const result = await awsUploadImage(fileData, imageName);
+        await User.findOneAndUpdate(id, {avatar: result});
+        return {
+          status: true,
+          urlAvatar: result
+        }
+      } catch (error) {
+        console.log(error);
+        return {
+          status: false,
+          urlAvatar: null
+        }
+      }
     }
   },
 };

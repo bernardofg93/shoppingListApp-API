@@ -1,43 +1,46 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer } = require("apollo-server-express");
 const connectDB = require("./config/db");
+const express = require('express');
 const resolvers = require("./db/resolvers");
 const typeDefs = require("./db/schema");
-require("dotenv").config({ path: "variables.env" });
 const jwt = require("jsonwebtoken");
+const { graphqlUploadExpress } = require("graphql-upload");
+require("dotenv").config({ path: "variables.env" });
 
 // Conection to mongo DB
 connectDB();
 
+server();
+
 // Server
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  cache: 'bounded',
-  context: ({ req }) => {
-
-    const token = req.headers["authorization"] || "";
-
-    if (token) {
-      // console.log(token);
-      try {
-        const user = jwt.verify(
-          token.replace("Bearer ", ""),
-          process.env.SECRET
-        );
-        // console.log(usuario);
-        return {
-          user,
-        };
-      } catch (error) {
-        console.log("Hubo un error");
-        console.log(error);
+async function server(){
+  const serverApollo = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => {
+      const token = req.headers["authorization"] || "";
+      if (token) {
+        try {
+          const user = jwt.verify(
+            token.replace("Bearer ", ""),
+            process.env.SECRET
+          );
+          return {
+            user,
+          };
+        } catch (error) {
+          console.log("Hubo un error");
+          console.log(error);
+          throw new Error("token invalido")
+        }
       }
-    }
-  },
-});
+    },
+  });
+  await serverApollo.start();
+  const app = express();
+  app.use(graphqlUploadExpress())
+  serverApollo.applyMiddleware({ app });
+  await new Promise((r) => app.listen({port: process.env.PORT || 4000}, r));
 
-// Run server
-server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
-  console.log(`Servidor listo en la URL ${url}`);
-});
-
+  console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
+}

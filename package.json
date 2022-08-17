@@ -11,14 +11,22 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^3.10.1",
+    "apollo-server-core": "^3.10.1",
+    "apollo-server-express": "^3.10.1",
     "aws-sdk": "^2.1195.0",
+    "Babel": "^0.0.1",
+    "babel-loader": "^8.2.5",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.1",
-    "graphql-upload": "^16.0.1",
+    "express": "^4.18.1",
+    "extract-files": "^12.0.0",
+    "graphql": "^16.6.0",
+    "graphql-upload": "^13.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.2"
   },
   "devDependencies": {
+    "@babel/helper-compilation-targets": "^7.18.9",
     "nodemon": "^2.0.19"
   }
 }
