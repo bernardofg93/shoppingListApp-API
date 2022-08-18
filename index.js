@@ -24,6 +24,13 @@ async function server() {
     typeDefs,
     resolvers,
     cache: "bounded",
+    cors: {
+      origin: 'https://expressjs-mongoose-production-d87c.up.railway.app/',
+      credentials: true
+    },
+    plugins: [
+      ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+    ],
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
@@ -47,7 +54,7 @@ async function server() {
   const app = express();
   app.use(graphqlUploadExpress());
   serverApollo.applyMiddleware({ app });
-  await new Promise((r) => app.listen({ port: process.env.PORT || PORT }, r));
+  await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
   console.log(`Servidor listo en la URL`);
 }
