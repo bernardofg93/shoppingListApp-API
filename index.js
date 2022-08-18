@@ -28,9 +28,6 @@ async function server() {
       origin: 'https://expressjs-mongoose-production-d87c.up.railway.app/',
       credentials: true
     },
-    plugins: [
-      ApolloServerPluginLandingPageLocalDefault({ embed: true }),
-    ],
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
