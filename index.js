@@ -27,8 +27,9 @@ server();
 // const proxy = createProxyMiddleware(options);
 
 const corsOptions = {
-  origin: 'https://expressjs-mongoose-production-d87c.up.railway.app',
-  credentials: true
+  origin: true,  //This will just copy the request origin and put it in response
+  optionsSuccessStatus: 200, 
+  credentials: true, 
 }
 
 // Server
@@ -37,7 +38,6 @@ async function server() {
     typeDefs,
     resolvers,
     cache: "bounded",
-    cors: cors(corsOptions),
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
@@ -60,7 +60,7 @@ async function server() {
   await serverApollo.start();
   const app = express();
   app.use(graphqlUploadExpress());
-  serverApollo.applyMiddleware({ app });
+  serverApollo.applyMiddleware({ app, cors: corsOptions });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
   console.log(`Servidor listo en la URL`);
