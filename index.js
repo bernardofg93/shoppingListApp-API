@@ -19,12 +19,17 @@ mongoose.connection.on("error", (err) => {
 
 server();
 
-const options = {
-  target: 'https://expressjs-mongoose-production-d87c.up.railway.app', // target host with the same base path
-  changeOrigin: true, // needed for virtual hosted sites
-};
+// const options = {
+//   target: 'https://expressjs-mongoose-production-d87c.up.railway.app', // target host with the same base path
+//   changeOrigin: true, // needed for virtual hosted sites
+// };
 
-const proxy = createProxyMiddleware(options);
+// const proxy = createProxyMiddleware(options);
+
+const corsOptions = {
+  origin: 'https://expressjs-mongoose-production-d87c.up.railway.app',
+  credentials: true
+}
 
 // Server
 async function server() {
@@ -32,6 +37,7 @@ async function server() {
     typeDefs,
     resolvers,
     cache: "bounded",
+    cors: cors(corsOptions),
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
@@ -53,7 +59,6 @@ async function server() {
   });
   await serverApollo.start();
   const app = express();
-  app.use(proxy);
   app.use(graphqlUploadExpress());
   serverApollo.applyMiddleware({ app });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
