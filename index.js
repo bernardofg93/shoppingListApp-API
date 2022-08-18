@@ -5,6 +5,7 @@ const resolvers = require("./db/resolvers");
 const typeDefs = require("./db/schema");
 const jwt = require("jsonwebtoken");
 const { graphqlUploadExpress } = require("graphql-upload");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 require("dotenv").config({ path: "variables.env" });
 
 // Conection to mongo DB
@@ -18,6 +19,13 @@ mongoose.connection.on("error", (err) => {
 
 server();
 
+const options = {
+  target: 'https://expressjs-mongoose-production-d87c.up.railway.app', // target host with the same base path
+  changeOrigin: true, // needed for virtual hosted sites
+};
+
+const proxy = createProxyMiddleware(options);
+
 // Server
 async function server() {
   const serverApollo = new ApolloServer({
@@ -25,7 +33,7 @@ async function server() {
     resolvers,
     cache: "bounded",
     cors: {
-      origin: 'https://expressjs-mongoose-production-d87c.up.railway.app/',
+      origin: 'https://expressjs-mongoose-production-d87c.up.railway.app',
       credentials: true
     },
     context: ({ req }) => {
@@ -49,7 +57,7 @@ async function server() {
   });
   await serverApollo.start();
   const app = express();
-  app.use(graphqlUploadExpress());
+  app.use(graphqlUploadExpress(), proxy);
   serverApollo.applyMiddleware({ app });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
