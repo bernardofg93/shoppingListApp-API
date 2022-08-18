@@ -53,7 +53,7 @@ async function server() {
   });
   await serverApollo.start();
   const app = express();
-  app.use(graphqlUploadExpress(), proxy);
+  app.use(graphqlUploadExpress());
   serverApollo.applyMiddleware({ app });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
