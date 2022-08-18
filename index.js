@@ -22,12 +22,12 @@ server();
 // const options = {
 //   target: 'https://expressjs-mongoose-production-d87c.up.railway.app', // target host with the same base path
 //   changeOrigin: true, // needed for virtual hosted sites
-// };
+// };/graphql
 
 // const proxy = createProxyMiddleware(options);
 
 const corsOptions = {
-  origin: true,  //This will just copy the request origin and put it in response
+  origin: 'https://expressjs-mongoose-production-d87c.up.railway.app/graphql',  //This will just copy the request origin and put it in response
   optionsSuccessStatus: 200, 
   credentials: true, 
 }
@@ -60,7 +60,7 @@ async function server() {
   await serverApollo.start();
   const app = express();
   app.use(graphqlUploadExpress());
-  serverApollo.applyMiddleware({ app, path: '/api/graphql', cors: corsOptions });
+  serverApollo.applyMiddleware({ app, cors: corsOptions });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
   console.log(`Servidor listo en la URL`);
