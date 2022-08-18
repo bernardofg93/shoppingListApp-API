@@ -32,10 +32,6 @@ async function server() {
     typeDefs,
     resolvers,
     cache: "bounded",
-    cors: {
-      origin: 'https://expressjs-mongoose-production-d87c.up.railway.app',
-      credentials: true
-    },
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
