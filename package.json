@@ -12,6 +12,7 @@
   "author": "Bernardo Flores",
   "license": "ISC",
   "dependencies": {
+    "@graphql-tools/schema": "^9.0.1",
     "apollo-server": "^3.10.1",
     "apollo-server-core": "^3.10.1",
     "apollo-server-express": "^3.10.1",
@@ -23,7 +24,8 @@
     "graphql-upload": "^13.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.2",
-    "serve": "^14.0.1"
+    "serve": "^14.0.1",
+    "subscriptions-transport-ws": "^0.11.0"
   },
   "devDependencies": {
     "http-proxy-middleware": "^2.0.6",
