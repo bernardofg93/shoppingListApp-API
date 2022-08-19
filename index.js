@@ -38,6 +38,8 @@ async function server() {
     typeDefs,
     resolvers,
     cache: "bounded",
+    introspection: true,
+    playground: true,
     context: ({ req }) => {
       const token = req.headers["authorization"] || "";
       if (token) {
