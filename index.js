@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "variables.env" });
 const { graphqlUploadExpress } = require("graphql-upload");
 const { createProxyMiddleware } = require("http-proxy-middleware");
-const { graphqlHTTP } = require('express-graphql');
+
 // import { createServer } from "http";
 // import { execute, subscribe } from "graphql";
 // import { SubscriptionServer } from "subscriptions-transport-ws";
@@ -65,9 +65,7 @@ async function server() {
 
 
   const app = express();
-  app.use("/graphql",graphqlUploadExpress(), graphqlHTTP({
-    graphiql: true
-  }));
+  app.use("/graphql",graphqlUploadExpress());
   serverApollo.applyMiddleware({app});
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
