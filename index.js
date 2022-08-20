@@ -24,8 +24,6 @@ mongoose.connection.on("error", (err) => {
   console.log("MongoDB connection error: ", err);
 });
 
-const httpServer = createServer();
-
 server();
 
 // const options = {
@@ -62,7 +60,6 @@ async function server() {
     }
   );
   await serverApollo.start();
-
 
   const app = express();
   app.use("/graphql",graphqlUploadExpress());
