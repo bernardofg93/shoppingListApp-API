@@ -12,7 +12,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 // import { SubscriptionServer } from "subscriptions-transport-ws";
 // impo rt { makeExecutableSchema } from "@graphql-tools/schema";
 const { createServer } = require("http");
-const { execute, subscribe  } = require("graphql")
+const { execute, subscribe } = require("graphql");
 
 // Conection to mongo DB
 mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true });
@@ -33,12 +33,6 @@ server();
 // };/graphql
 
 // const proxy = createProxyMiddleware(options);
-
-const corsOptions = {
-  origin: "https://expressjs-mongoose-production-d87c.up.railway.app/graphql", //This will just copy the request origin and put it in response
-  optionsSuccessStatus: 200,
-  credentials: true,
-};
 
 // Server
 async function server() {
@@ -67,16 +61,21 @@ async function server() {
           }
         }
       },
-    },
-    {
-      server: httpServer,
-      path: server.graphqlPath,
     }
   );
   await serverApollo.start();
+
+  const corsOptions = {
+    origin: "https://expressjs-mongoose-production-d87c.up.railway.app", //This will just copy the request origin and put it in response
+  };
+
   const app = express();
   app.use(graphqlUploadExpress());
-  serverApollo.applyMiddleware({ app, cors: corsOptions });
+  serverApollo.applyMiddleware({
+    app,
+    cors: corsOptions,
+    path: "/graphql",
+  });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
   console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
