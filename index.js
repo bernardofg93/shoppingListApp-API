@@ -62,20 +62,11 @@ async function server() {
   );
   await serverApollo.start();
 
-  const corsOptions = {
-    origin: true,  //This will just copy the request origin and put it in response
-    optionsSuccessStatus: 200, 
-    credentials: true,
-  };
 
-  // const app = express();
-  // app.use(graphqlUploadExpress());
-  serverApollo.use(graphqlUploadExpress());
-  serverApollo.applyMiddleware({
-    cors: corsOptions,
-    path: "/graphql",
-  });
-  serverApollo.listen({ port: process.env.PORT || 4000 });
+  const app = express();
+  app.use("/graphql",graphqlUploadExpress());
+  serverApollo.applyMiddleware({app});
+  await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
   console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
 }
