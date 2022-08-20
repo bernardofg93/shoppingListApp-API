@@ -66,7 +66,9 @@ async function server() {
   await serverApollo.start();
 
   const corsOptions = {
-    origin: "https://expressjs-mongoose-production-d87c.up.railway.app", //This will just copy the request origin and put it in response
+    origin: true,  //This will just copy the request origin and put it in response
+    optionsSuccessStatus: 200, 
+    credentials: true,
   };
 
   const app = express();
@@ -74,7 +76,7 @@ async function server() {
   serverApollo.applyMiddleware({
     app,
     cors: corsOptions,
-    path: "/graphql",
+    path: "/api/graphql",
   });
   await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
