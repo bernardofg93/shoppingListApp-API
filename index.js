@@ -75,7 +75,7 @@ async function server() {
     cors: corsOptions,
     path: "/graphql",
   });
-  await new Promise((r) => serverApollo.listen({ port: process.env.PORT || 4000 }, r));
+  await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
 
   console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
 }
