@@ -1,43 +1,81 @@
-
-const { ApolloServer } = require("apollo-server");
-const connectDB = require("./config/db");
+const { ApolloServer } = require("apollo-server-express");
+const mongoose = require("mongoose");
+const express = require("express");
 const resolvers = require("./db/resolvers");
 const typeDefs = require("./db/schema");
-require("dotenv").config({ path: "variables.env" });
 const jwt = require("jsonwebtoken");
+require("dotenv").config({ path: "variables.env" });
+const { graphqlUploadExpress } = require("graphql-upload");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+// import { createServer } from "http";
+// import { execute, subscribe } from "graphql";
+// import { SubscriptionServer } from "subscriptions-transport-ws";
+// impo rt { makeExecutableSchema } from "@graphql-tools/schema";
+const { createServer } = require("http");
+const { execute, subscribe } = require("graphql");
 
 // Conection to mongo DB
-connectDB();
+mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true });
+mongoose.connection.once("open", () => {
+  console.log("MongoDB Connected");
+});
+mongoose.connection.on("error", (err) => {
+  console.log("MongoDB connection error: ", err);
+});
+
+const httpServer = createServer();
+
+server();
+
+// const options = {
+//   target: 'https://expressjs-mongoose-production-d87c.up.railway.app', // target host with the same base path
+//   changeOrigin: true, // needed for virtual hosted sites
+// };/graphql
+
+// const proxy = createProxyMiddleware(options);
 
 // Server
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => {
-
-    const token = req.headers["authorization"] || "";
-
-    if (token) {
-      console.log(token);
-      try {
-        const user = jwt.verify(
-          token.replace("Bearer ", ""),
-          process.env.SECRET
-        );
-        // console.log(usuario);
-        return {
-          user,
-        };
-      } catch (error) {
-        console.log("Hubo un error");
-        console.log(error);
-      }
+async function server() {
+  const serverApollo = new ApolloServer(
+    {
+      typeDefs,
+      resolvers,
+      context: ({ req }) => {
+        const token = req.headers["authorization"] || "";
+        if (token) {
+          try {
+            const user = jwt.verify(
+              token.replace("Bearer ", ""),
+              process.env.SECRET
+            );
+            return {
+              user,
+            };
+          } catch (error) {
+            console.log("Hubo un error");
+            console.log(error);
+            throw new Error("token invalido");
+          }
+        }
+      },
     }
-  },
-});
+  );
+  await serverApollo.start();
 
-// Run server
-server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
-  console.log(`Servidor listo en la URL ${url}`);
-});
+  const corsOptions = {
+    origin: true,  //This will just copy the request origin and put it in response
+    optionsSuccessStatus: 200, 
+    credentials: true,
+  };
 
+  const app = express();
+  app.use(graphqlUploadExpress());
+  serverApollo.applyMiddleware({
+    app,
+    cors: corsOptions,
+    path: "/graphql",
+  });
+  await new Promise((r) => serverApollo.listen({ port: process.env.PORT || 4000 }, r));
+
+  console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
+}
