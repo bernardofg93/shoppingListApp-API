@@ -68,14 +68,14 @@ async function server() {
     credentials: true,
   };
 
-  const app = express();
-  app.use(graphqlUploadExpress());
+  // const app = express();
+  // app.use(graphqlUploadExpress());
+  serverApollo.use(graphqlUploadExpress());
   serverApollo.applyMiddleware({
-    app,
     cors: corsOptions,
     path: "/graphql",
   });
-  await new Promise((r) => app.listen({ port: process.env.PORT || 4000 }, r));
+  serverApollo.listen({ port: process.env.PORT || 4000 });
 
   console.log(`Servidor listo en la URL ${serverApollo.graphqlPath}`);
 }
