@@ -6,14 +6,6 @@ const typeDefs = require("./db/schema");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "variables.env" });
 const { graphqlUploadExpress } = require("graphql-upload");
-const { createProxyMiddleware } = require("http-proxy-middleware");
-
-// import { createServer } from "http";
-// import { execute, subscribe } from "graphql";
-// import { SubscriptionServer } from "subscriptions-transport-ws";
-// impo rt { makeExecutableSchema } from "@graphql-tools/schema";
-const { createServer } = require("http");
-const { execute, subscribe } = require("graphql");
 
 // Conection to mongo DB
 mongoose.connect(process.env.DB_MONGO, { useNewUrlParser: true });
@@ -25,13 +17,6 @@ mongoose.connection.on("error", (err) => {
 });
 
 server();
-
-// const options = {
-//   target: 'https://expressjs-mongoose-production-d87c.up.railway.app', // target host with the same base path
-//   changeOrigin: true, // needed for virtual hosted sites
-// };/graphql
-
-// const proxy = createProxyMiddleware(options);
 
 // Server
 async function server() {
@@ -47,6 +32,9 @@ async function server() {
               token.replace("Bearer ", ""),
               process.env.SECRET
             );
+
+            console.log("index-user",user);
+
             return {
               user,
             };

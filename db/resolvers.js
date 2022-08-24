@@ -8,7 +8,7 @@ require("dotenv").config({ path: "variables.env" });
 const awsUploadImage = require("../utils/aws-upload-image");
 
 const createToken = (user, secret, expiresIn) => {
-  const { id, name, address, city, country, phone, email } = user;
+  const { id, name, address, city, country, phone, email, avatar } = user;
 
   return jwt.sign(
     {
@@ -19,6 +19,7 @@ const createToken = (user, secret, expiresIn) => {
       country,
       phone,
       email,
+      avatar
     },
     secret,
     {
@@ -142,7 +143,6 @@ const resolvers = {
       if (!product) {
         throw new Error("Producto no encontrado");
       }
-
       // guardar en la bd
       product = await Product.findOneAndUpdate({ _id: id }, input, {
         new: true,
@@ -155,10 +155,8 @@ const resolvers = {
       if (!product) {
         throw new Error("Producto no encontrado");
       }
-
       // Eliminar
       await Product.findOneAndDelete({ _id: id });
-
       return "Producto Eliminado";
     },
     newPurchase: async (_, { input }, ctx) => {
@@ -166,24 +164,22 @@ const resolvers = {
       try {
         // create new purchase
         const newPurchase = new Purchase(input);
-
         const res = await newPurchase.save();
-        console.log(res);
         return res;
       } catch (error) {
         console.log(error);
       }
     },
     updateAvatar: async (_, { file }, ctx) => {
-      const { id } = ctx.user;
+      const user = ctx.user;
       const { createReadStream, mimetype } = await file;
       const extension = mimetype.split("/")[1]
-      const imageName = `avatar/${id}.${extension}`;
+      const imageName = `avatar/${user.id}.${extension}`;
       const fileData = createReadStream();
 
       try {
-        const result = await awsUploadImage(fileData, imageName);
-        await User.findOneAndUpdate(id, {avatar: result});
+       const result = await awsUploadImage(fileData, imageName);
+       await User.findOneAndUpdate(user.id, {avatar: result});
         return {
           status: true,
           urlAvatar: result
